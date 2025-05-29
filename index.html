@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Température de l'eau près de chez vous</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+      background: #111;
+      color: #0cf;
+    }
+    h1 {
+      margin-bottom: 1em;
+    }
+    #info {
+      font-size: 1.2em;
+      margin-top: 2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Température de l'eau près de chez vous 🌊</h1>
+  <p id="info">Chargement de votre position...</p>
+
+  <script>
+    function afficher(message) {
+      document.getElementById('info').innerText = message;
+    }
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        try {
+          const proxyURL = `https://deephex-proxy.onrender.com/proxy.php?lat=${lat}&lng=${lng}`;
+          const response = await fetch(proxyURL);
+          const data = await response.json();
+
+          if (data.hours && data.hours.length > 0 && data.hours[0].waterTemperature?.noaa != null) {
+            const temp = data.hours[0].waterTemperature.noaa;
+            afficher(`🌡️ Température de l'eau : ${temp.toFixed(1)} °C`);
+          } else {
+            afficher("⚠️ Données non disponibles.");
+          }
+        } catch (error) {
+          console.error(error);
+          afficher("❌ Erreur lors de la récupération des données.");
+        }
+      }, (error) => {
+        afficher("❌ Erreur géolocalisation : " + error.message);
+      });
+    } else {
+      afficher("🚫 Géolocalisation non disponible dans ce navigateur.");
+    }
+  </script>
+</body>
+</html>
