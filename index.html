@@ -3,28 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Température de l'eau près de chez vous</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     body {
+      margin: 0;
       font-family: sans-serif;
-      text-align: center;
-      padding: 2em;
       background: #111;
       color: #0cf;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
     h1 {
-      margin-bottom: 1em;
+      text-align: center;
+      margin: 1em 0 0.5em;
     }
+
+    #map {
+      width: 90vw;
+      height: 70vh;
+      max-width: 800px;
+      border: 2px solid #0cf;
+      border-radius: 8px;
+    }
+
     #info {
-      font-size: 1.2em;
-      margin-top: 2em;
+      margin: 1em;
+      font-size: 1.1em;
+      color: #0cf;
     }
   </style>
 </head>
 <body>
+
   <h1>Température de l'eau près de chez vous 🌊</h1>
+  <div id="map">Chargement de la carte…</div>
   <p id="info">Chargement de votre position...</p>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    const proxyURL = 'https://stormglass-proxy.onrender.com/proxy.php';
+
     function afficher(message) {
       document.getElementById('info').innerText = message;
     }
@@ -34,16 +58,28 @@
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
+        // Initialise la carte
+        const map = L.map('map').setView([lat, lng], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap',
+        }).addTo(map);
+
+        // Requête au proxy
         try {
-          const proxyURL = `https://stormglass-proxy.onrender.com/proxy.php?lat=${lat}&lng=${lng}`;
-          const response = await fetch(proxyURL);
+          const response = await fetch(`${proxyURL}?lat=${lat}&lng=${lng}`);
           const data = await response.json();
 
           if (data.hours && data.hours.length > 0 && data.hours[0].waterTemperature?.noaa != null) {
-            const temp = data.hours[0].waterTemperature.noaa;
-            afficher(`🌡️ Température de l'eau : ${temp.toFixed(1)} °C`);
+            const temp = data.hours[0].waterTemperature.noaa.toFixed(1);
+            afficher(`🌡️ Température de l'eau : ${temp} °C`);
+
+            // Marqueur avec popup
+            L.marker([lat, lng])
+              .addTo(map)
+              .bindPopup(`<strong>Votre position</strong><br>🌡️ ${temp} °C`)
+              .openPopup();
           } else {
-            afficher("⚠️ Données non disponibles.");
+            afficher("⚠️ Données de température non disponibles.");
           }
         } catch (error) {
           console.error(error);

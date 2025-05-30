@@ -1,63 +1,73 @@
 # 🌊 Température de l'eau près de chez vous
 
-Ce projet affiche en temps réel la température de l'eau (surface) la plus proche de votre position, en utilisant :
-
-- 📍 Géolocalisation navigateur (HTML5)
-- 🌐 API StormGlass (via un proxy sécurisé en PHP)
-- 🔒 Backend hébergé sur Render pour protéger la clé API
-- 🧼 Front 100 % statique hébergé sur GitHub Pages
+Ce projet affiche la température de l’eau à votre position géographique en temps réel, avec une carte interactive et un affichage fluide via un loader animé.
 
 ---
 
 ## 🚀 Démo en ligne
 
-👉 [Voir la version déployée](https://deephex.github.io/temperature-eau/)
+👉 [Voir la version déployée](https://deephex.github.io/temperature-eau-map/)
 
 ---
 
-## ⚙️ Fonctionnement
+## ⚙️ Fonctionnalités
 
-1. Le navigateur demande l'autorisation de vous localiser
-2. Les coordonnées sont envoyées à un proxy PHP sur Render
-3. Le proxy appelle l'API [StormGlass](https://stormglass.io/) (température de l'eau)
-4. Le site affiche la température de surface en °C
+- 📍 Géolocalisation HTML5
+- 🗺️ Carte interactive avec [Leaflet.js](https://leafletjs.com)
+- 🔄 Chargement visuel via spinner CSS
+- 🌐 Requête vers l’API [StormGlass.io](https://stormglass.io) via un **proxy PHP sécurisé**
+- 🔐 Clé API **non exposée publiquement**
 
 ---
 
-## 🔐 Sécurité de la clé API
+## 🛠️ Technologies utilisées
 
-La clé API StormGlass n’est **jamais exposée côté client**.  
-Elle est stockée côté serveur sur Render et utilisée via un simple proxy :
+- HTML / CSS / JavaScript
+- Leaflet (carte OpenStreetMap)
+- PHP (proxy)
+- GitHub Pages (front)
+- Render (backend sécurisé)
 
-https://deephex-proxy.onrender.com/proxy.php?lat=...&lng=...
+---
+
+## 🔒 Sécurité de la clé API
+
+La clé API StormGlass est **stockée côté serveur** sur Render.  
+Le front interroge ce proxy sécurisé :
+
+https://stormglass-proxy.onrender.com/proxy.php?lat=...&lng=...
+
+---
+
+## 📁 Structure du projet
+
+/
+├── index.html # Page principale
+├── style.css # Style global + animation loader
+├── script.js # Logique JS : géoloc, requête, carte, rendu
 
 ---
 
 ## 📦 Déploiement
 
-### Côté front (GitHub Pages)
+### Front (GitHub Pages)
 
-- Place le fichier `index.html` à la racine d’un dépôt GitHub
-- Active GitHub Pages via les **Settings** du dépôt
+1. Créez un dépôt GitHub (ex: `temperature-eau-map`)
+2. Ajoutez les fichiers fournis
+3. Activez GitHub Pages :
+   - Settings > Pages > Deploy from branch
+   - Branche : `main` / Dossier : `/root`
+4. Votre app sera accessible via :  
+   `https://votre-nom.github.io/temperature-eau-map/`
 
-### Côté backend (Render)
+### Back (proxy sur Render)
 
-Voir [ce dépôt](https://github.com/deephex/stormglass-proxy)  
-Déploiement Docker avec PHP + clé API stockée dans les **Environment Variables**
-
----
-
-## 🧠 Technologies
-
-- HTML5 / JavaScript
-- Fetch API
-- PHP (proxy backend)
-- Docker (pour Render)
-- StormGlass.io (température de l'eau)
-- GitHub Pages (hébergement statique)
+Utilisez ce dépôt : [`stormglass-proxy`](https://github.com/deephex/stormglass-proxy)  
+Hébergez-le avec Docker + variable d’environnement :  
+`STORMGLASS_API_KEY`
 
 ---
 
 ## 📜 Licence
 
-Code open-source sous licence MIT.
+Code open-source sous [MIT License](LICENSE)
