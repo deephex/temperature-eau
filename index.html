@@ -35,7 +35,7 @@
         const lng = position.coords.longitude;
 
         try {
-          const proxyURL = `https://deephex-proxy.onrender.com/proxy.php?lat=${lat}&lng=${lng}`;
+          const proxyURL = `https://stormglass-proxy.onrender.com/proxy.php?lat=${lat}&lng=${lng}`;
           const response = await fetch(proxyURL);
           const data = await response.json();
 
