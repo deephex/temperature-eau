@@ -6,7 +6,7 @@ Ce projet affiche la température de l’eau à votre position géographique en 
 
 ## 🚀 Démo en ligne
 
-👉 [Voir la version déployée](https://deephex.github.io/temperature-eau-map/)
+👉 [Voir la version déployée](https://deephex.github.io/temperature-eau/)
 
 ---
 
@@ -35,16 +35,20 @@ Ce projet affiche la température de l’eau à votre position géographique en 
 La clé API StormGlass est **stockée côté serveur** sur Render.  
 Le front interroge ce proxy sécurisé :
 
-https://stormglass-proxy.onrender.com/proxy.php?lat=...&lng=...
+```
+https://deephex-proxy.onrender.com/proxy.php?lat=...&lng=...
+```
 
 ---
 
 ## 📁 Structure du projet
 
+```
 /
-├── index.html # Page principale
-├── style.css # Style global + animation loader
-├── script.js # Logique JS : géoloc, requête, carte, rendu
+├── index.html       # Page principale
+├── style.css        # Style global + animation loader
+├── script.js        # Logique JS : géoloc, requête, carte, rendu
+```
 
 ---
 
